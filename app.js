@@ -27,7 +27,7 @@ app.use(cors())
 app.use(express.static(path.join(__dirname, 'public')));
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
-global.requestEncryptFlag = false;
+global.requestEncryptFlag = true;
 global.log = logger(process.env.LOG_PREFIX);
 
 const server = http.createServer(app);
