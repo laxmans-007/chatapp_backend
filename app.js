@@ -10,6 +10,7 @@ import cors from "cors";
 import http from "http";
 import { Server as SocketIoServer } from 'socket.io';
 import SocketHandler from "./libraries/socketHandler.js";
+import logger  from "./utils/logger.js";
 
 
 const __filename = fileURLToPath(import.meta.url);
@@ -26,8 +27,7 @@ app.use(cors())
 app.use(express.static(path.join(__dirname, 'public')));
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
-import logger  from "./utils/logger.js";
-global.requestEncryptFlag = true;
+global.requestEncryptFlag = false;
 global.log = logger(process.env.LOG_PREFIX);
 
 const server = http.createServer(app);
@@ -82,6 +82,10 @@ app.use(function(req, res, next) {
 
 app.use('/api/v1', authRouter);
 app.use("/api/v1/user", userRouter);
+
+app.get("/", (req,res, next) => {
+    res.send("ChatApp backed is working.");
+});
 
 
   
