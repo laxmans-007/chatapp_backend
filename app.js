@@ -12,7 +12,6 @@ import { Server as SocketIoServer } from 'socket.io';
 import SocketHandler from "./libraries/socketHandler.js";
 import logger  from "./utils/logger.js";
 
-
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 global.ROOT_DIR = path.join(__dirname, '');
@@ -28,7 +27,12 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 global.requestEncryptFlag = true;
-global.log = logger(process.env.LOG_PREFIX);
+// global.log = logger(process.env.LOG_PREFIX);
+global.log = {
+    error : (message) => {
+        console.log(message);
+    }
+}
 
 const server = http.createServer(app);
 const io = new SocketIoServer(server, {
@@ -44,7 +48,7 @@ io.on('connection', async (socket) => {
     let validation = await SocketHandler.validateUser(socket.handshake.headers,socket.handshake.auth, true);
     if(!validation.status) {
         global.log.error(`Socket user validation failed - ${JSON.stringify(validation)}`);
-        io.emit('custom_connect_error', JSON.stringify({ statusCode: 401 , message: "Unauthrised user."}));
+        socket.emit('custom_connect_error', JSON.stringify({ statusCode: 401 , message: "Unauthrised user."}));
         socket.disconnect();
     }
 

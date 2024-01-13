@@ -44,14 +44,21 @@ export default class SocketHandler {
       ...this.message,
       mobileNo: this.user.mobile || "NA"
     };
+
     if (recipents.status == "online" && recipents.socketID) {
       if (global.requestEncryptFlag) {
         messageData = await this.encodeData(messageData, recipents);
       }
       global.log.error(`Socket recipent data-  ${JSON.stringify({messageData, recipents})}`);
-      this.socket.broadcast
+      if(this.isOldMsg) {
+        this.socket.emit("chatMessage", messageData);
+        await Events.deleteMany({toUser: recipents._id});
+      } else {
+        this.socket.broadcast
         .to(recipents.socketID)
         .emit("chatMessage", messageData);
+      }
+      
     } else {
       await Events.findOneAndUpdate(
         {event: JSON.stringify(messageData)},
@@ -154,7 +161,6 @@ export default class SocketHandler {
       status: "away",
       socketID: data.socketID,
     };
-
     if(type == 'connected' ) {
       let iv = socket.handshake.headers["x-iv"];
       let secretKey = socket.handshake.headers["x-key"];
