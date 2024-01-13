@@ -42,8 +42,10 @@ export default class SocketHandler {
     }
     let messageData = {
       ...this.message,
-      mobileNo: this.user.mobile || "NA"
     };
+    if(!this.isOldMsg) {
+      messageData.mobileNo = this.user.mobile || "NA"
+    }
 
     if (recipents.status == "online" && recipents.socketID) {
       if (global.requestEncryptFlag) {
