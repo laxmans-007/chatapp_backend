@@ -30,7 +30,8 @@ global.requestEncryptFlag = true;
 // global.log = logger(process.env.LOG_PREFIX);
 global.log = {
     error : (message) => {
-        console.log(message);
+        let time = new Date().toLocaleString('hi-IN', {timeZone: "Asia/Kolkata"});
+        console.log(time, message);
     }
 }
 

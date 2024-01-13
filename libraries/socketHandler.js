@@ -101,7 +101,6 @@ export default class SocketHandler {
     });
 
     let response = await Promise.allSettled(promiseArray);
-    global.log.error(`Promise response - ${JSON.stringify(response)}`);
     return response;
   }
 
@@ -193,7 +192,7 @@ export default class SocketHandler {
         response.user = await Users.findById(tokenDetails._id);
       }
     } catch (err) {
-      global.log.error(`User Authrisation failed - ${JSON.stringify({e: err.stack})}`);
+      global.log.error(`User Authrisation failed - ${JSON.stringify({e: err.stack, token})}`);
       return response;
     }
     return { ...response, status: true };
